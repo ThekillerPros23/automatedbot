@@ -4,4 +4,4 @@ import { receive_message } from "../controller/recive_message.js"
 
 export const routes = express.Router()
 routes.get("/webhook",send_whatsapp_message)
-routes.post("/receive_message",receive_message)
+routes.get("/receive_message",receive_message)
