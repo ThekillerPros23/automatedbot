@@ -1,41 +1,30 @@
-export async function send_whatsapp_message(tokenEnv) {
-  const url = "https://graph.facebook.com/v22.0/585210678015289/messages";
-  const token = tokenEnv || process.env.WHATSAPP_TOKEN; // Token desde argumento o variable de entorno
-  const recipients = ["50765733633", "50763695150"]; // Lista de destinatarios
+export async function send_whatsapp_message(req, res) {
+  try {
+    const url = `https://graph.facebook.com/v22.0/${process.env.whatsappID}/messages`;
+    const access_token = process.env.access_token;
 
-  const payload = (recipient) => ({
-    messaging_product: "whatsapp",
-    to: recipient,
-    type: "text",
-    text: {
-      body: `✅ Checklist Diario:
-1. Revisar correos 📧
-2. Actualizar pendientes 📋
-3. Avanzar en proyecto 💻
-4. Revisión de fin de día 🔍
-5. Plan para mañana 🗓️`
-    }
-  });
+    const body = {
+      messaging_product: "whatsapp",
+      to: "50763695150", // <-- número destino en formato internacional
+      type: "text",
+      text: {
+        body: "Hola, este es un mensaje de prueba desde Node.js 🚀"
+      }
+    };
 
-  async function sendMessage(recipient) {
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload(recipient))
-      });
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${access_token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
 
-      const data = await response.json();
-      console.log(`Respuesta para ${recipient}:`, data);
-    } catch (error) {
-      console.error(`Error enviando mensaje a ${recipient}:`, error);
-    }
+    const data = await response.json();
+    res.status(200).json({ success: true, response: data });
+  } catch (error) {
+    console.error("Error enviando mensaje:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
-
-
 }
-
-
