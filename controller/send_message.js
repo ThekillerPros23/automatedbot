@@ -35,27 +35,7 @@ export async function send_whatsapp_message(tokenEnv) {
     }
   }
 
-  function scheduleDaily(hour = 17, minute = 38) {
-    const now = new Date();
-    const next = new Date();
-    next.setHours(hour, minute, 0, 0);
 
-    if (next <= now) {
-      next.setDate(next.getDate() + 1);
-    }
-
-    const delay = next - now;
-    console.log(`Checklist programado para: ${next}`);
-
-    setTimeout(async () => {
-      for (const recipient of recipients) {
-        await sendMessage(recipient);
-      }
-      scheduleDaily(hour, minute);
-    }, delay);
-  }
-
-  scheduleDaily();
 }
 
 
